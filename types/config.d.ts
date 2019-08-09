@@ -9,7 +9,7 @@ export interface IBarrettMaterialViewConfig {
     clickLocked?: boolean;
     scrollSelector?: string | null | Window;
     targetSelector: string | null;
-    offset: IBarrettMaterialOffset;
+    offset?: IBarrettMaterialOffset;
     params?: any;
 }
 export declare const defaultBarrettMaterialViewConfig: IBarrettMaterialViewConfig;
