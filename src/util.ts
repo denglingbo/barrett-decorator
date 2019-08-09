@@ -20,8 +20,17 @@ const defaultArt: IDefaultArt = {
   out_num: 0,
 };
 
+// 判断是否在可视区域
+function inView(rect: any, offset: any) {
+  return rect.y + rect.height - offset.top > 0
+    && rect.y < window.innerHeight - offset.bottom
+    // 判断元素的左右是否在可是区域
+    && rect.x > 0
+    && rect.x + rect.width < window.innerWidth;
+}
+
 /**
- * 使用滚动判断是否在可视区域 判断元素是否进行上报
+ * 使用滚动判断是否在可视区域 判断元素是否进行上报，没有划出可视区域，则不进行上报
  */
 export function isReportAndSetART($target: any, { scrollSelector, offset }: IBarrettMaterialViewConfig): boolean {
   let isReport = false;
@@ -38,7 +47,7 @@ export function isReportAndSetART($target: any, { scrollSelector, offset }: IBar
     const art: IDefaultArt = JSON.parse(str);
 
     // 进入可视区域
-    if (rect.y + rect.height - offset.top > 0 && rect.y < window.innerHeight - offset.bottom) {
+    if (inView(rect, offset)) {
       if (!art.inview) { // 进入可视区域 and 上一次不在可视区域
         art.report = true;
         art.ety_num = art.ety_num + 1;
@@ -72,12 +81,11 @@ export function isInViewArea($target: any, offset: any): boolean {
   if ($target) {
     const rect: any = $target.getBoundingClientRect();
 
-    isReport = rect.y + rect.height - offset.top >= 0 && rect.y < window.innerHeight - offset.bottom;
+    isReport = inView(rect, offset);
   }
 
   return isReport;
 }
-
 
 /**
  * get multiple elements

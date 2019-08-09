@@ -17,7 +17,7 @@ export interface IBarrettMaterialViewConfig {
   // 用于判断元素，同时 bt-art, @click 等也会自动附加到该 元素上
   targetSelector: string | null;
   // 用于可视区域判断的偏移量
-  offset: IBarrettMaterialOffset;
+  offset?: IBarrettMaterialOffset;
   params?: any;
 }
 
