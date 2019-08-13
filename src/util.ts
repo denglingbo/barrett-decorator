@@ -25,8 +25,8 @@ function inView(rect: any, offset: any) {
   return rect.y + rect.height - offset.top > 0
     && rect.y < window.innerHeight - offset.bottom
     // 判断元素的左右是否在可是区域
-    && rect.x > 0
-    && rect.x + rect.width < window.innerWidth;
+    && rect.x >= 0
+    && rect.x + rect.width <= window.innerWidth;
 }
 
 /**

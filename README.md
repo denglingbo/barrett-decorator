@@ -1,5 +1,26 @@
 ## 埋点组件
 
+### 初始化
+```
+  BarrettInit([{
+    name: 'sensors',
+    uid: cookie.get('uid'),
+    config: {
+      send_type: 'ajax',
+      server_url: process.env.VUE_APP_SENSORS_API,
+      heatmap_url: 'https://static.sensorsdata.cn/sdk/1.14.2/sensorsdata.min.js',
+      use_client_time: true,
+    }
+  }]);
+
+  // vue
+  // meta 支持 字符串 or object，第三个参数对应 object 的 key
+  router.afterEach((to, from) => {
+    BarrettPageView(to.fullPath, to.meta, null, {
+      $url_path: to.path,
+    });
+  });
+```
 
 ### BarrettMaterialAutoReport
 ```
@@ -109,6 +130,8 @@
 ## 重写 report 实例方法， middleware/BarrettSensors.ts, ...
 
 ```
+  import BarrettSensors from 'barrett-decorator/lib/middleware/BarrettSensors';
+
   BarrettSensors.prototype.sendPageview = (data: any) => {
     console.log('sendPageview', data);
   };
