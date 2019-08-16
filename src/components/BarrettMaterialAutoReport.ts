@@ -21,7 +21,7 @@ function loopSendData($target: any, callback: any) {
     {
       name: 'gtag',
       data: $target.getAttribute('bt-gtag'),
-    }
+    },
   ];
 
   dataArr.forEach((d: any) => {
@@ -94,7 +94,7 @@ function tastRunner() {
         if (!err) {
           ReportEntry(reportType, {
             event: 'view_material',
-            data: { ...task.params, ...data }
+            data: { ...task.params, ...data },
           });
         }
       });
@@ -152,7 +152,7 @@ export default function BarrettMaterialAutoReport(configArr: IBarrettMaterialVie
               if (!err) {
                 ReportEntry(reportType, {
                   event: 'click_material',
-                  data: { ...config.params, ...data }
+                  data: { ...config.params, ...data },
                 });
               }
             });
@@ -188,7 +188,7 @@ export default function BarrettMaterialAutoReport(configArr: IBarrettMaterialVie
                 if (!err && isReport) {
                   ReportEntry(reportType, {
                     event: 'view_material',
-                    data: { ...ret, ...config.params, ...data }
+                    data: { ...ret, ...config.params, ...data },
                   });
                 }
               });
