@@ -21,7 +21,7 @@ class BarrettSensors {
     this.init();
   }
 
-  public sendPageview(data: any): void {
+  public sendPageview(data: any, meta?: any): void {
     sensors.quick('autoTrackSinglePage', data);
   }
 

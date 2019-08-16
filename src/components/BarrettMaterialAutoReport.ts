@@ -1,7 +1,40 @@
 import { IBarrettMaterialViewConfig, defaultBarrettMaterialViewConfig } from '../config';
 import { isReportAndSetART, isInViewArea , delegate } from '../util';
-import { ReportMaterial } from '../report';
+import { ReportEntry, IReportType } from '../report';
 import { barrett } from '../';
+
+/**
+ * 循环发送数据
+ * @param $target element 元素
+ * @param callback 回调
+ */
+function loopSendData($target: any, callback: any) {
+  if (!$target) {
+    return;
+  }
+
+  const dataArr: any = [
+    {
+      name: 'sensors',
+      data: $target.getAttribute('bt-data'),
+    },
+    {
+      name: 'gtag',
+      data: $target.getAttribute('bt-gtag'),
+    }
+  ];
+
+  dataArr.forEach((d: any) => {
+    if (d.data) {
+      try {
+        const data = JSON.parse(d.data);
+        callback(false, d.name, data);
+      } catch (ex) {
+        callback(true, ex);
+      }
+    }
+  });
+}
 
 const barrettLocked = () => barrett.length === 0;
 
@@ -55,8 +88,16 @@ function tastRunner() {
   taskQueue.forEach((task: any) => {
     const targets = task.fn();
     targets.forEach(($target: any) => {
-      const data = JSON.parse($target.getAttribute('bt-data'));
-      ReportMaterial('view_material', { ...task.params, ...data });
+      // const data = JSON.parse($target.getAttribute('bt-data'));
+      // ReportMaterial('view_material', { ...task.params, ...data });
+      loopSendData($target, (err: boolean, reportType: IReportType, data: any) => {
+        if (!err) {
+          ReportEntry(reportType, {
+            event: 'view_material',
+            data: { ...task.params, ...data }
+          });
+        }
+      });
     });
   });
 }
@@ -76,6 +117,7 @@ function start() {
 
 /**
  * 素材 view 逻辑，由某些方法主动触发
+ * @param configArr, 配置信息
  */
 export default function BarrettMaterialAutoReport(configArr: IBarrettMaterialViewConfig[]) {
   return (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => {
@@ -96,19 +138,24 @@ export default function BarrettMaterialAutoReport(configArr: IBarrettMaterialVie
         // 自动注册点击触发器
         if (!clickLocked) {
           delegate(document.body, 'click', targetSelector, function(this: any, e: any) {
-            const dataStr = this.getAttribute('bt-data');
-            if (!dataStr || dataStr === '[object Object]') {
-              return;
-            }
+            // const dataStr = this.getAttribute('bt-data');
+            // try {
+            //   const data = JSON.parse(dataStr);
+            //   const event = this.getAttribute('bt-event') || 'click_material';
 
-            try {
-              const data = JSON.parse(dataStr);
-              const event = this.getAttribute('bt-event') || 'click_material';
+            //   ReportMaterial(event, { ...data, ...config.params });
+            // } catch (ex) {
+            //   //
+            // }
 
-              ReportMaterial(event, { ...data, ...config.params });
-            } catch (ex) {
-              //
-            }
+            loopSendData(this, (err: boolean, reportType: IReportType, data: any) => {
+              if (!err) {
+                ReportEntry(reportType, {
+                  event: 'click_material',
+                  data: { ...config.params, ...data }
+                });
+              }
+            });
           });
         }
 
@@ -136,14 +183,15 @@ export default function BarrettMaterialAutoReport(configArr: IBarrettMaterialVie
 
             $targets.forEach(($target) => {
               const isReport = isInViewArea($target, config.offset);
-              try {
-                const data = JSON.parse($target.getAttribute('bt-data'));
-                if (isReport) {
-                  ReportMaterial('view_material', { ...ret, ...config.params, ...data });
+
+              loopSendData($target, (err: boolean, reportType: IReportType, data: any) => {
+                if (!err && isReport) {
+                  ReportEntry(reportType, {
+                    event: 'view_material',
+                    data: { ...ret, ...config.params, ...data }
+                  });
                 }
-              } catch (ex) {
-                //
-              }
+              });
             });
           }
         }

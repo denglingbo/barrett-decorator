@@ -20,6 +20,14 @@ const defaultArt: IDefaultArt = {
   out_num: 0,
 };
 
+export function isPlainObject(data: any): boolean {
+  return Object.prototype.toString.apply(data) === '[object Object]';
+}
+
+export function isPlainArray(data: any): boolean {
+  return Object.prototype.toString.apply(data) === '[object Array]';
+}
+
 // 判断是否在可视区域
 function inView(rect: any, offset: any) {
   return rect.y + rect.height - offset.top > 0

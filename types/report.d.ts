@@ -1,2 +1,3 @@
-export declare function ReportPageView(data: any): void;
-export declare function ReportMaterial(event: string, data: any): void;
+export declare type IReportType = 'sensors' | 'fbq' | 'gtag';
+export declare function ReportPageView(data: any, meta: any): void;
+export declare function ReportEntry(reportType: IReportType, res: any): void;

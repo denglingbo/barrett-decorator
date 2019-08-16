@@ -33,6 +33,6 @@ export default function BarrettPageView(
       ? fullPath
       : `${window.location.origin}${fullPath}`;
 
-    ReportPageView(Object.assign({}, data, fixParams || {}));
+    ReportPageView(Object.assign({}, data, fixParams || {}), meta);
   }
 }

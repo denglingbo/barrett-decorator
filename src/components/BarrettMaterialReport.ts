@@ -1,4 +1,4 @@
-import { ReportMaterial } from '../report';
+import { ReportEntry } from '../report';
 
 /**
  * 用于点击事件触发
@@ -28,7 +28,11 @@ export default function BarrettMaterialReport(params: any = {}, event: string = 
           Object.assign(res, data);
         }
 
-        ReportMaterial(event, res);
+        // ReportMaterial(event, res);
+        ReportEntry('sensors', {
+          event,
+          data: res,
+        });
       }
 
       return ret;
