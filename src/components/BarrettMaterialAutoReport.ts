@@ -137,25 +137,27 @@ export default function BarrettMaterialAutoReport(configArr: IBarrettMaterialVie
 
         // 自动注册点击触发器
         if (!clickLocked) {
-          delegate(document.body, 'click', targetSelector, function(this: any, e: any) {
-            // const dataStr = this.getAttribute('bt-data');
-            // try {
-            //   const data = JSON.parse(dataStr);
-            //   const event = this.getAttribute('bt-event') || 'click_material';
+          const $ts: any = document.querySelectorAll(targetSelector);
 
-            //   ReportMaterial(event, { ...data, ...config.params });
-            // } catch (ex) {
-            //   //
-            // }
+          if (!$ts || $ts.length === 0) {
+            return;
+          }
 
-            loopSendData(this, (err: boolean, reportType: IReportType, data: any) => {
-              if (!err) {
-                ReportEntry(reportType, {
-                  event: 'click_material',
-                  data: { ...config.params, ...data },
-                });
+          $ts.forEach(($t: any) => {
+            $t.onclick = (event: any) => {
+              if (!event.target) {
+                return;
               }
-            });
+
+              loopSendData(event.target, (err: boolean, reportType: IReportType, data: any) => {
+                if (!err) {
+                  ReportEntry(reportType, {
+                    event: 'click_material',
+                    data: { ...config.params, ...data },
+                  });
+                }
+              });
+            };
           });
         }
 
