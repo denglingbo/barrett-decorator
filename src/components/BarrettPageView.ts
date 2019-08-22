@@ -27,12 +27,12 @@ export default function BarrettPageView(
 ) {
   const data: any = {};
 
-  if (meta && meta.barrett && meta.barrett.amber) {
-    data.page_type = pageKey ? meta.barrett.amber[pageKey] : meta.barrett.amber;
+  if (meta && meta.barrett) {
     data.$url = /^http/.test(fullPath)
       ? fullPath
       : `${window.location.origin}${fullPath}`;
 
-    ReportPageView(Object.assign({}, data, fixParams || {}), meta);
+    const p = Object.assign({}, data, fixParams || {});
+    ReportPageView(p, meta, pageKey);
   }
 }

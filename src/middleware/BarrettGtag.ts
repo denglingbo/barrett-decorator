@@ -8,7 +8,7 @@ export default class {
     this.init();
   }
 
-  public sendPageview(data: any, meta?: any): void {
+  public sendPageview(data: any, meta?: any, pageKey?: string | null): void {
     (window as any).gtag('config', this.config.id, {
       page_path: data.$url,
       page_title: meta && meta.barrett ? meta.barrett.amber : 'unknow',

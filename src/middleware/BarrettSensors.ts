@@ -21,8 +21,17 @@ class BarrettSensors {
     this.init();
   }
 
-  public sendPageview(data: any, meta?: any): void {
-    sensors.quick('autoTrackSinglePage', data);
+  public sendPageview(data: any, meta?: any, pageKey?: string | null): void {
+    const amber = meta.barrett && meta.barrett.amber;
+
+    const def = {
+      page_type: pageKey ? amber[pageKey] : amber,
+    };
+
+    sensors.quick('autoTrackSinglePage', {
+      ...data,
+      ...def,
+    });
   }
 
   public sendMaterial(event: string, data: any): void {

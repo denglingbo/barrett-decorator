@@ -9,7 +9,7 @@ declare class BarrettSensors {
     private config;
     private uid;
     constructor(config: any, uid: string);
-    sendPageview(data: any, meta?: any): void;
+    sendPageview(data: any, meta?: any, pageKey?: string | null): void;
     sendMaterial(event: string, data: any): void;
     private init;
 }

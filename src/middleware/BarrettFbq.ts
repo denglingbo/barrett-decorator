@@ -21,7 +21,7 @@ export default class {
     this.init();
   }
 
-  public sendPageview(data: any, meta?: any): void {
+  public sendPageview(data: any, meta?: any, pageKey?: string | null): void {
     if (!(window as any).fbq) {
       return;
     }

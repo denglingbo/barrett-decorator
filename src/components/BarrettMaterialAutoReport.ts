@@ -4,6 +4,27 @@ import { ReportEntry, IReportType } from '../report';
 import { barrett } from '../';
 
 /**
+ * 自动模式下点击自动上报
+ * @param this, context target
+ * @param event, event
+ */
+function autoClickMethod(this: any, event: any) {
+  if (!this) {
+    return;
+  }
+
+  loopSendData(this, (err: boolean, reportType: IReportType, data: any) => {
+    if (!err) {
+      const params = this.__barrett_params__;
+      ReportEntry(reportType, {
+        event: 'click_material',
+        data: { ...params, ...data },
+      });
+    }
+  });
+}
+
+/**
  * 循环发送数据
  * @param $target element 元素
  * @param callback 回调
@@ -36,6 +57,9 @@ function loopSendData($target: any, callback: any) {
   });
 }
 
+/**
+ * 判断是否有开启的上报
+ */
 const barrettLocked = () => barrett.length === 0;
 
 /**
@@ -51,16 +75,17 @@ function tastRegister(config: IBarrettMaterialViewConfig, taskId: string | numbe
 
   // 如果存在该 runner 则不继续注册
   // barrettWhiteList 如果没有开启任何埋点开启也不注册
-  if (finder || barrettLocked()) {
+  if (finder || barrettLocked() || !config.targetSelector) {
+    return;
+  }
+
+  const $targets = document.querySelectorAll(config.targetSelector);
+
+  if (!$targets || $targets.length === 0) {
     return;
   }
 
   const fn = () => {
-    if (!config.targetSelector) {
-      return [];
-    }
-
-    const $targets = document.querySelectorAll(config.targetSelector);
     const arr: any = [];
 
     $targets.forEach(($target: any) => {
@@ -86,10 +111,8 @@ function tastRegister(config: IBarrettMaterialViewConfig, taskId: string | numbe
  */
 function tastRunner() {
   taskQueue.forEach((task: any) => {
-    const targets = task.fn();
+    const targets = task.fn() || [];
     targets.forEach(($target: any) => {
-      // const data = JSON.parse($target.getAttribute('bt-data'));
-      // ReportMaterial('view_material', { ...task.params, ...data });
       loopSendData($target, (err: boolean, reportType: IReportType, data: any) => {
         if (!err) {
           ReportEntry(reportType, {
@@ -137,27 +160,19 @@ export default function BarrettMaterialAutoReport(configArr: IBarrettMaterialVie
 
         // 自动注册点击触发器
         if (!clickLocked) {
-          const $ts: any = document.querySelectorAll(targetSelector);
+          const $targets: any = document.querySelectorAll(targetSelector);
 
-          if (!$ts || $ts.length === 0) {
+          if (!$targets || $targets.length === 0) {
             return;
           }
 
-          $ts.forEach(($t: any) => {
-            $t.onclick = (event: any) => {
-              if (!event.target) {
-                return;
-              }
+          $targets.forEach(($target: any) => {
+            if (!$target.__barrett_params__) {
+              $target.__barrett_params__ = config.params || {};
+            }
 
-              loopSendData(event.target, (err: boolean, reportType: IReportType, data: any) => {
-                if (!err) {
-                  ReportEntry(reportType, {
-                    event: 'click_material',
-                    data: { ...config.params, ...data },
-                  });
-                }
-              });
-            };
+            $target.removeEventListener('click', autoClickMethod);
+            $target.addEventListener('click', autoClickMethod, false);
           });
         }
 

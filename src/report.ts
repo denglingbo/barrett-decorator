@@ -11,41 +11,11 @@ interface IReportClass {
   sendMaterial: (...args: any[]) => void;
 }
 
-export function ReportPageView(data: any, meta: any) {
+export function ReportPageView(data: any, meta: any, pageKey?: string | null) {
   barrett.forEach((b: BarrettSensors | BarrettFbq) => {
-    b.sendPageview(data, meta);
+    b.sendPageview(data, meta, pageKey);
   });
 }
-
-// export function ReportMaterial(event: string, data: any) {
-//   const fn: BarrettSensors = barrett.find((b: any) => b.name === 'sensors');
-
-//   if (!fn) {
-//     return;
-//   }
-
-//   fn.sendMaterial(event, data);
-// }
-
-// export function ReportFbq(event: string, data: any) {
-//   const fn: BarrettFbq = barrett.find((b: any) => b.name === 'fbq');
-
-//   if (!fn) {
-//     return;
-//   }
-
-//   fn.sendMaterial(event, data);
-// }
-
-// export function ReportGtag(event: string, data: any) {
-//   const fn: any = barrett.find((b: any) => b.name === 'gtag');
-
-//   if (!fn) {
-//     return;
-//   }
-
-//   fn.sendMaterial(event, data);
-// }
 
 export function ReportEntry(reportType: IReportType, res: any) {
   // 上报实例
