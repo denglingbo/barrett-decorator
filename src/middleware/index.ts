@@ -1,11 +1,13 @@
 import BarrettSensors from './BarrettSensors';
 import BarrettFbq from './BarrettFbq';
 import BarrettGtag from './BarrettGtag';
+import BarrettTiktok from './BarrettTiktok';
 
 const middle: any = {
   sensors: BarrettSensors,
   fbq: BarrettFbq,
   gtag: BarrettGtag,
+  tiktok: BarrettTiktok,
   // inject others ...
 };
 
